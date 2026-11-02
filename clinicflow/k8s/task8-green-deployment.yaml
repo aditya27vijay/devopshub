@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clinicflow-green
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: clinicflow-bluegreen
+      version: green
+  template:
+    metadata:
+      labels:
+        app: clinicflow-bluegreen
+        version: green
+    spec:
+      containers:
+        - name: clinicflow
+          image: clinicflow-green:1.0
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet: { path: /health, port: 80 }
+            initialDelaySeconds: 5
